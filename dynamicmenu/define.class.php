@@ -1,33 +1,12 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
- * Menu profile field definition.
+ * Dynamic menu profile field definition.
  *
- * @package    profilefield_menu
- * @copyright  2007 onwards Shane Elliot {@link http://pukunui.com}
+ * @package    profilefield_dynamicmenu
+ * @copyright  2016 onwards Antonello Moro {@link http://treagles.it}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/**
- * Class profile_define_menu
- *
- * @copyright  2007 onwards Shane Elliot {@link http://pukunui.com}
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class profile_define_dynamicmenu extends profile_define_base {
 
     /**
@@ -39,19 +18,26 @@ class profile_define_dynamicmenu extends profile_define_base {
         // Param 1 for menu type contains the options.
         $form->addElement('textarea', 'param1', get_string('sqlquery', 'profilefield_dynamicmenu'), array('rows' => 6, 'cols' => 40));
         $form->setType('param1', PARAM_TEXT);
-
+        $form->addHelpButton('param1', 'param1sqlhelp', 'profilefield_dynamicmenu');
         // Default data.
         $form->addElement('text', 'defaultdata', get_string('profiledefaultdata', 'admin'), 'size="50"');
         $form->setType('defaultdata', PARAM_TEXT);
         
-        $form->addElement('text', 'sql_count_data', 'Numero di valori possibili');
+        //let's see if the user can modify the sql
+        global $USER;
+        $context = context_system::instance();
+        $hascap=has_capability('profilefield/dynamicmenu:caneditsql', $context);
+        
+        if (!$hascap){
+        	$form->hardFreeze('param1');
+        	$form->hardFreeze('defaultdata');
+        }
+        $form->addElement('text', 'sql_count_data',get_string('numbersqlvalues', 'profilefield_dynamicmenu') );
         $form->setType('sql_count_data', PARAM_RAW);
         $form->hardFreeze('sql_count_data');
-        $form->addElement('textarea', 'sql_sample_data', 'Campione di valori estratti', array('rows' => 6, 'cols' => 40));
+        $form->addElement('textarea', 'sql_sample_data',get_string('samplesqlvalues', 'profilefield_dynamicmenu') , array('rows' => 6, 'cols' => 40));
         $form->setType('sql_sample_data', PARAM_RAW);
         $form->hardFreeze('sql_sample_data');
-        
-
     }
 
     /**
@@ -60,27 +46,34 @@ class profile_define_dynamicmenu extends profile_define_base {
      */
     public function define_after_data(&$form) {
         global $DB;
-        $sql = $form->getElementValue('param1');
-
-        if ($sql){
-	        $rs=$DB->get_records_sql($sql);
-	        $i=0;
-	        $def_sample='';
-	        $count_data=count($rs);
-	        foreach ($rs as $record){
-	        	if ($i==12){
-	        		exit;
-	        	}
-	        	if (strlen($record->data)>40){
-	        		$sampleval=substr($record->data,0,36).'...';
-	        	}else{
-	        		$sampleval=$record->data;
-	        	}
-	        	$def_sample.='id: '.$record->id .' - data: '.$sampleval."\n";
-	        }
-	        $form->setDefault('sql_count_data', $count_data);
-	        $form->setDefault('sql_sample_data', $def_sample);
+        try{
+        	$sql = $form->getElementValue('param1');
+        	
+        	if ($sql){
+        		$rs=$DB->get_records_sql($sql);
+        		$i=0;
+        		$def_sample='';
+        		$count_data=count($rs);
+        		foreach ($rs as $record){
+        			if ($i==12){
+        				exit;
+        			}
+        			if (isset($record->data) && isset($record->id)){
+        				if (strlen($record->data)>40){
+        					$sampleval=substr($record->data,0,36).'...';
+        				}else{
+        					$sampleval=$record->data;
+        				}
+        				$def_sample.='id: '.$record->id .' - data: '.$sampleval."\n";
+        			}
+        		}
+        		$form->setDefault('sql_count_data', $count_data);
+        		$form->setDefault('sql_sample_data', $def_sample);
+        	}
+        }catch (Exception $e) {
+        	//Do nothing. Errors at this pahse are handled in define_validate_specific
         }
+
     }
     /**
      * Validates data for the profile field.
@@ -118,7 +111,7 @@ class profile_define_dynamicmenu extends profile_define_base {
         		}
         	}
         }catch (Exception $e) {
-        	$err['param1']='Errore nell\'esecuzione della query: '.$e->getMessage();
+        	$err['param1']=get_string('sqlerror','profilefield_dynamicmenu') . ': ' .$e->getMessage();
         }
         
         return $err;

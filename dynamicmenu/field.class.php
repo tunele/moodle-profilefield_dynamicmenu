@@ -15,19 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Menu profile field.
+ * Dynamic menu profile field definition.
  *
- * @package    profilefield_menu
- * @copyright  2007 onwards Shane Elliot {@link http://pukunui.com}
+ * @package    profilefield_dynamicmenu
+ * @copyright  2016 onwards Antonello Moro {@link http://treagles.it}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/**
- * Class profile_field_menu
- *
- * @copyright  2007 onwards Shane Elliot {@link http://pukunui.com}
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class profile_field_dynamicmenu extends profile_field_base {
 
     /** @var array $options */
@@ -47,22 +41,6 @@ class profile_field_dynamicmenu extends profile_field_base {
     public function __construct($fieldid = 0, $userid = 0) {
         // First call parent constructor.
         parent::__construct($fieldid, $userid);
-		/*
-        // Param 1 for menu type is the options.
-        if (isset($this->field->param1)) {
-            $options = explode("\n", $this->field->param1);
-        } else {
-            $options = array();
-        }
-        $this->options = array();
-        if (!empty($this->field->required)) {
-            $this->options[''] = get_string('choose').'...';
-        }
-        foreach ($options as $key => $option) {
-            $this->options[$option] = format_string($option); // Multilang formatting with filters.
-        }
-        
-		*/
         $sql=$this->field->param1;
         global $DB;
         $rs=$DB->get_records_sql($sql);
