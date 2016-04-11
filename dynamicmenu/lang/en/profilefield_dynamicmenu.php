@@ -9,11 +9,11 @@
 
 $string['pluginname'] = 'Dropdown dynamic menu';
 
-$string['queryerrorfalse'] = "Errore nell'esecuzione della query: il valore di ritorno è false";
-$string['queryerrorempty'] = "La query non ha restituito alcun valore: impossibile validare";
-$string['queryerroridmissing'] = 'La query deve restituire una colonna chiamata id e una colonna chiamata data: id missing';
-$string['queryerrordatamissing'] = 'La query deve restituire una colonna chiamata id e una colonna chiamata data: data missing';
-$string['queryerrordefaultmissing'] = 'Il valore impostato come default non esiste nella lista dei valori possibili';
+$string['queryerrorfalse'] = "Error executing the query: return value is false";
+$string['queryerrorempty'] = "No results found executing the query: cannnot validate";
+$string['queryerroridmissing'] = 'id column is missing in query return values';
+$string['queryerrordatamissing'] = 'data column is missing in query return values';
+$string['queryerrordefaultmissing'] = 'Default value does not exists among the list of allowed values';
 $string['sqlquery'] = 'Sql query';
 $string['numbersqlvalues'] = 'Number of possible values';
 $string['samplesqlvalues'] = 'Sample of possible values';
