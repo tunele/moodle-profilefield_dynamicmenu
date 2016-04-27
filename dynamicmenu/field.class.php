@@ -22,6 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
+/**
+ * Class profile_field_dynamicmenu
+ *
+ * @copyright  2016 onwards Antonello Moro {@link http://treagles.it}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class profile_field_dynamicmenu extends profile_field_base {
 
     /** @var array $options */
@@ -41,15 +48,15 @@ class profile_field_dynamicmenu extends profile_field_base {
     public function __construct($fieldid = 0, $userid = 0) {
         // First call parent constructor.
         parent::__construct($fieldid, $userid);
-        $sql=$this->field->param1;
+        $sql = $this->field->param1;
         global $DB;
-        $rs=$DB->get_records_sql($sql);
+        $rs = $DB->get_records_sql($sql);
         $this->options = array();
-        if ($this->field->required){
+        if ($this->field->required) {
         	$this->options[''] = get_string('choose').'...';
         }
-        foreach($rs as $key => $option) {
-        	$this->options[$key] = format_string($option->data);//multilang formatting
+        foreach ($rs as $key => $option) {
+        	$this->options[$key] = format_string($option->data);// Multilang formatting.
         }
 
         // Set the data key.

@@ -14,8 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Access file for profilefield_dynamicmenu.
+ *
+ * @package    profilefield_dynamicmenu
+ * @copyright  2016 onwards Antonello Moro {@link http://treagles.it}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
-// sSpecific capability (requires knowing db and sql).
+// Specific capability (requires knowing db and sql).
 $capabilities = array(
     'profilefield/dynamicmenu:caneditsql' => array(
         'riskbitmask'  => RISK_CONFIG,

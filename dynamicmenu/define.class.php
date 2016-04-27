@@ -24,6 +24,12 @@
  *
  */
 
+/**
+ * Class profile_define_dynamicmenu
+ *
+ * @copyright  2016 onwards Antonello Moro {@link http://treagles.it}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class profile_define_dynamicmenu extends profile_define_base {
 
     /**
@@ -47,13 +53,14 @@ class profile_define_dynamicmenu extends profile_define_base {
         $hascap = has_capability('profilefield/dynamicmenu:caneditsql', $context);
 
         if (!$hascap) {
-        	$form->hardFreeze('param1');
-        	$form->hardFreeze('defaultdata');
+            $form->hardFreeze('param1');
+            $form->hardFreeze('defaultdata');
         }
-        $form->addElement('text', 'sql_count_data',get_string('numbersqlvalues', 'profilefield_dynamicmenu') );
+        $form->addElement('text', 'sql_count_data', get_string('numbersqlvalues', 'profilefield_dynamicmenu') );
         $form->setType('sql_count_data', PARAM_RAW);
         $form->hardFreeze('sql_count_data');
-        $form->addElement('textarea', 'sql_sample_data',get_string('samplesqlvalues', 'profilefield_dynamicmenu') , array('rows' => 6, 'cols' => 40));
+        $form->addElement('textarea', 'sql_sample_data', get_string('samplesqlvalues', 'profilefield_dynamicmenu') ,
+            array('rows' => 6, 'cols' => 40));
         $form->setType('sql_sample_data', PARAM_RAW);
         $form->hardFreeze('sql_sample_data');
     }
@@ -64,31 +71,31 @@ class profile_define_dynamicmenu extends profile_define_base {
      */
     public function define_after_data(&$form) {
         global $DB;
-        try{
+        try {
         	$sql = $form->getElementValue('param1');
-        	
+
         	if ($sql){
         		$rs=$DB->get_records_sql($sql);
-        		$i=0;
+        		$i = 0;
         		$def_sample='';
         		$count_data=count($rs);
         		foreach ($rs as $record){
-        			if ($i==12){
+        			if ($i == 12){
         				exit;
         			}
         			if (isset($record->data) && isset($record->id)){
-        				if (strlen($record->data)>40){
-        					$sampleval=substr($record->data,0,36).'...';
+        				if (strlen($record->data) > 40){
+        					$sampleval = substr($record->data, 0, 36).'...';
         				}else{
-        					$sampleval=$record->data;
+        					$sampleval = $record->data;
         				}
-        				$def_sample.='id: '.$record->id .' - data: '.$sampleval."\n";
+        				$def_sample .= 'id: '.$record->id .' - data: '.$sampleval."\n";
         			}
         		}
         		$form->setDefault('sql_count_data', $count_data);
         		$form->setDefault('sql_sample_data', $def_sample);
         	}
-        }catch (Exception $e) {
+        } catch (Exception $e) {
         	//Do nothing. Errors at this pahse are handled in define_validate_specific
         }
 
@@ -110,17 +117,17 @@ class profile_define_dynamicmenu extends profile_define_base {
         try{
         	$rs=$DB->get_records_sql($sql);
         	if (!$rs){
-        		$err['param1']=get_string('queryerrorfalse', 'profilefield_dynamicmenu');
+        		$err['param1'] = get_string('queryerrorfalse', 'profilefield_dynamicmenu');
         	}else{
-        		if (count($rs)==0){
+        		if (count($rs) == 0){
         			$err['param1']=get_string('queryerrorempty', 'profilefield_dynamicmenu');
         		}else{
-        			$firstval=reset($rs);
+        			$firstval = reset($rs);
         			if (!object_property_exists($firstval,'id')){
         				$err['param1']=get_string('queryerroridmissing', 'profilefield_dynamicmenu');
         			}else{
         				if (!object_property_exists($firstval,'data')){
-        					$err['param1']=get_string('queryerrordatamissing', 'profilefield_dynamicmenu');
+        					$err['param1'] = get_string('queryerrordatamissing', 'profilefield_dynamicmenu');
         				}elseif(!empty($data->defaultdata) && !isset($rs[$data->defaultdata])){
         					//def missing
         					$err['defaultdata'] = get_string('queryerrordefaultmissing', 'profilefield_dynamicmenu');
@@ -128,7 +135,7 @@ class profile_define_dynamicmenu extends profile_define_base {
         			}
         		}
         	}
-        }catch (Exception $e) {
+        } catch (Exception $e) {
         	$err['param1']=get_string('sqlerror','profilefield_dynamicmenu') . ': ' .$e->getMessage();
         }
         
