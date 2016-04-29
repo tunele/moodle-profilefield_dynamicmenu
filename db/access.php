@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 $capabilities = array(
     'profilefield/dynamicmenu:caneditsql' => array(
         'riskbitmask'  => RISK_CONFIG,
-		'captype'      => 'write',
+        'captype'      => 'write',
 		'contextlevel' => CONTEXT_SYSTEM
     )
 );
