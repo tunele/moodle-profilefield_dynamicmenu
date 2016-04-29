@@ -96,7 +96,7 @@ class profile_field_dynamicmenu extends profile_field_base {
      */
     public function edit_field_set_default($mform) {
         $key = $this->field->defaultdata;
-        if (isset($this->options[$key]) || ($key = array_search($key, $this->options)) !== false){
+        if (isset($this->options[$key]) || ($key = array_search($key, $this->options)) !== false) {
             $defaultkey = $key;
         } else {
             $defaultkey = '';
