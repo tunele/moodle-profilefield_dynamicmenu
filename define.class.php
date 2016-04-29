@@ -37,8 +37,7 @@ class profile_define_dynamicmenu extends profile_define_base
      *
      * @param moodleform $form
      */
-    public function define_form_specific($form) 
-    {
+    public function define_form_specific($form) {
 
         // Param 1 for menu type contains the options.
         $form->addElement(
@@ -76,8 +75,7 @@ class profile_define_dynamicmenu extends profile_define_base
      *
      * @param moodleform $mform
      */
-    public function define_after_data(&$form) 
-    {
+    public function define_after_data(&$form) {
         global $DB;
         try {
             $sql = $form->getElementValue('param1');
@@ -85,9 +83,9 @@ class profile_define_dynamicmenu extends profile_define_base
             if ($sql) {
                 $rs=$DB->get_records_sql($sql);
                 $i = 0;
-                $def_sample='';
-                $count_data=count($rs);
-                foreach ($rs as $record){
+                $defSample = '';
+                $countData=count($rs);
+                foreach ($rs as $record) {
                     if ($i == 12) {
                         exit;
                     }
@@ -97,17 +95,17 @@ class profile_define_dynamicmenu extends profile_define_base
                         }else{
                             $sampleval = $record->data;
                         }
-                        $def_sample .= 'id: '.$record->id .' - data: '.$sampleval."\n";
+                        $defSample .= 'id: '.$record->id .' - data: '.$sampleval."\n";
                     }
                 }
-                $form->setDefault('sql_count_data', $count_data);
-                $form->setDefault('sql_sample_data', $def_sample);
+                $form->setDefault('sql_count_data', $countData);
+                $form->setDefault('sql_sample_data', $defSample);
             }
         } catch (Exception $e) {
-            //Do nothing. Errors at this pahse are handled in define_validate_specific
+            throw ($e);
         }
-
     }
+
     /**
      * Validates data for the profile field.
      *
@@ -120,11 +118,11 @@ class profile_define_dynamicmenu extends profile_define_base
         $err = array();
 
         $data->param1 = str_replace("\r", '', $data->param1);
-        //provo ad eseguire la query
-        $sql=$data->param1;
+        // Provo ad eseguire la query.
+        $sql = $data->param1;
         global $DB;
         try{
-            $rs=$DB->get_records_sql($sql);
+            $rs = $DB->get_records_sql($sql);
             if (!$rs) {
                 $err['param1'] = get_string('queryerrorfalse', 'profilefield_dynamicmenu');
             }else{
