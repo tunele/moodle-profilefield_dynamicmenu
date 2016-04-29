@@ -17,28 +17,24 @@
 /**
  * Dynamic menu profile field definition.
  *
- * @package   profilefield_dynamicmenu
- * @copyright 2016 onwards Antonello Moro {@link http://treagles.it}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    profilefield_dynamicmenu
+ * @copyright  2016 onwards Antonello Moro {@link http://treagles.it}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
 /**
  * Class profile_field_dynamicmenu
  *
- * @copyright 2016 onwards Antonello Moro {@link http://treagles.it}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2016 onwards Antonello Moro {@link http://treagles.it}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class profile_field_dynamicmenu extends profile_field_base
-{
-    /**
-     * @var array $options
-     */
+class profile_field_dynamicmenu extends profile_field_base {
+
+    /** @var array $options */
     public $options;
 
-    /**
-     * @var int $datakey
-     */
+    /** @var int $datakey */
     public $datakey;
 
     /**
@@ -57,10 +53,10 @@ class profile_field_dynamicmenu extends profile_field_base
         $rs = $DB->get_records_sql($sql);
         $this->options = array();
         if ($this->field->required) {
-            $this->options[''] = get_string('choose').'...';
+        	$this->options[''] = get_string('choose').'...';
         }
         foreach ($rs as $key => $option) {
-            $this->options[$key] = format_string($option->data);// Multilang formatting.
+        	$this->options[$key] = format_string($option->data);// Multilang formatting.
         }
 
         // Set the data key.
@@ -86,22 +82,21 @@ class profile_field_dynamicmenu extends profile_field_base
     /**
      * Create the code snippet for this field instance
      * Overwrites the base class method
-     *
      * @param moodleform $mform Moodle form instance
      */
     public function edit_field_add($mform) {
         $mform->addElement('select', $this->inputname, format_string($this->field->name), $this->options);
+        $mform->setType( $this->inputname,PARAM_TEXT);
     }
 
     /**
      * Set the default value for this field instance
      * Overwrites the base class method.
-     *
      * @param moodleform $mform Moodle form instance
      */
     public function edit_field_set_default($mform) {
         $key = $this->field->defaultdata;
-        if (isset($this->options[$key]) || ($key = array_search($key, $this->options)) !== false) {
+        if (isset($this->options[$key]) || ($key = array_search($key, $this->options)) !== false){
             $defaultkey = $key;
         } else {
             $defaultkey = '';
@@ -115,8 +110,8 @@ class profile_field_dynamicmenu extends profile_field_base
      * This should be converted to the respective option string to be saved in database
      * Overwrites base class accessor method.
      *
-     * @param  mixed    $data       The key returned from the select input in the form
-     * @param  stdClass $datarecord The object that will be used to save the record
+     * @param mixed $data The key returned from the select input in the form
+     * @param stdClass $datarecord The object that will be used to save the record
      * @return mixed Data or null
      */
     public function edit_save_data_preprocess($data, $datarecord) {
@@ -137,7 +132,6 @@ class profile_field_dynamicmenu extends profile_field_base
 
     /**
      * HardFreeze the field if locked.
-     *
      * @param moodleform $mform instance of the moodleform class
      */
     public function edit_field_set_locked($mform) {
@@ -152,7 +146,7 @@ class profile_field_dynamicmenu extends profile_field_base
     /**
      * Convert external data (csv file) from value to key for processing later by edit_save_data_preprocess
      *
-     * @param  string $value one of the values in menu options.
+     * @param string $value one of the values in menu options.
      * @return int options key for the menu
      */
     public function convert_external_data($value) {
