@@ -51,7 +51,6 @@ class profile_define_dynamicmenu extends profile_define_base
         $form->setType('defaultdata', PARAM_TEXT);
 
         // Let's see if the user can modify the sql.
-        global $USER;
         $context = context_system::instance();
         $hascap = has_capability('profilefield/dynamicmenu:caneditsql', $context);
 
@@ -86,7 +85,7 @@ class profile_define_dynamicmenu extends profile_define_base
             $countdata = count($rs);
             foreach ($rs as $record) {
                 if ($i == 12) {
-                    exit;
+                    break;
                 }
                 if (isset($record->data) && isset($record->id)) {
                     if (strlen($record->data) > 40) {
