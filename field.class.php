@@ -53,10 +53,10 @@ class profile_field_dynamicmenu extends profile_field_base {
         $rs = $DB->get_records_sql($sql);
         $this->options = array();
         if ($this->field->required) {
-        	$this->options[''] = get_string('choose').'...';
+            $this->options[''] = get_string('choose').'...';
         }
         foreach ($rs as $key => $option) {
-        	$this->options[$key] = format_string($option->data);// Multilang formatting.
+            $this->options[$key] = format_string($option->data);// Multilang formatting.
         }
 
         // Set the data key.
@@ -86,7 +86,7 @@ class profile_field_dynamicmenu extends profile_field_base {
      */
     public function edit_field_add($mform) {
         $mform->addElement('select', $this->inputname, format_string($this->field->name), $this->options);
-        $mform->setType( $this->inputname,PARAM_TEXT);
+        $mform->setType( $this->inputname, PARAM_TEXT);
     }
 
     /**
