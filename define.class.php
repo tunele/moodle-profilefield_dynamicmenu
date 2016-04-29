@@ -81,10 +81,10 @@ class profile_define_dynamicmenu extends profile_define_base
             $sql = $form->getElementValue('param1');
 
             if ($sql) {
-                $rs=$DB->get_records_sql($sql);
+                $rs = $DB->get_records_sql($sql);
                 $i = 0;
-                $defSample = '';
-                $countData=count($rs);
+                $defsample = '';
+                $countdata = count($rs);
                 foreach ($rs as $record) {
                     if ($i == 12) {
                         exit;
@@ -92,14 +92,14 @@ class profile_define_dynamicmenu extends profile_define_base
                     if (isset($record->data) && isset($record->id)) {
                         if (strlen($record->data) > 40) {
                             $sampleval = substr($record->data, 0, 36).'...';
-                        }else{
+                        }else {
                             $sampleval = $record->data;
                         }
-                        $defSample .= 'id: '.$record->id .' - data: '.$sampleval."\n";
+                        $defsample .= 'id: '.$record->id .' - data: '.$sampleval."\n";
                     }
                 }
-                $form->setDefault('sql_count_data', $countData);
-                $form->setDefault('sql_sample_data', $defSample);
+                $form->setDefault('sql_count_data', $countdata);
+                $form->setDefault('sql_sample_data', $defsample);
             }
         } catch (Exception $e) {
             throw ($e);
@@ -113,39 +113,37 @@ class profile_define_dynamicmenu extends profile_define_base
      * @param  array $files
      * @return array
      */
-    public function define_validate_specific($data, $files) 
-    {
+    public function define_validate_specific($data, $files) {
         $err = array();
 
         $data->param1 = str_replace("\r", '', $data->param1);
         // Provo ad eseguire la query.
         $sql = $data->param1;
         global $DB;
-        try{
+        try {
             $rs = $DB->get_records_sql($sql);
             if (!$rs) {
                 $err['param1'] = get_string('queryerrorfalse', 'profilefield_dynamicmenu');
-            }else{
+            } else {
                 if (count($rs) == 0) {
                     $err['param1']=get_string('queryerrorempty', 'profilefield_dynamicmenu');
-                }else{
+                } else {
                     $firstval = reset($rs);
                     if (!object_property_exists($firstval, 'id')) {
                         $err['param1']=get_string('queryerroridmissing', 'profilefield_dynamicmenu');
-                    }else{
+                    } else {
                         if (!object_property_exists($firstval, 'data')) {
                             $err['param1'] = get_string('queryerrordatamissing', 'profilefield_dynamicmenu');
-                        }elseif(!empty($data->defaultdata) && !isset($rs[$data->defaultdata])) {
-                            //def missing
+                        } elseif (!empty($data->defaultdata) && !isset($rs[$data->defaultdata])) {
+                            // Def missing.
                             $err['defaultdata'] = get_string('queryerrordefaultmissing', 'profilefield_dynamicmenu');
                         }
                     }
                 }
             }
         } catch (Exception $e) {
-            $err['param1']=get_string('sqlerror', 'profilefield_dynamicmenu') . ': ' .$e->getMessage();
+            $err['param1'] = get_string('sqlerror', 'profilefield_dynamicmenu') . ': ' .$e->getMessage();
         }
-        
         return $err;
     }
 
@@ -155,8 +153,7 @@ class profile_define_dynamicmenu extends profile_define_base
      * @param  array|stdClass $data
      * @return array|stdClass
      */
-    public function define_save_preprocess($data) 
-    {
+    public function define_save_preprocess($data) {
         $data->param1 = str_replace("\r", '', $data->param1);
 
         return $data;
