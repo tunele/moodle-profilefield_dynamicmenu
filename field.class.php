@@ -31,15 +31,14 @@
  */
 class profile_field_dynamicmenu extends profile_field_base
 {
-
     /**
- * @var array $options 
-*/
+     * @var array $options
+     */
     public $options;
 
     /**
- * @var int $datakey 
-*/
+     * @var int $datakey
+     */
     public $datakey;
 
     /**
@@ -50,8 +49,7 @@ class profile_field_dynamicmenu extends profile_field_base
      * @param int $fieldid
      * @param int $userid
      */
-    public function __construct($fieldid = 0, $userid = 0) 
-    {
+    public function __construct($fieldid = 0, $userid = 0) {
         // First call parent constructor.
         parent::__construct($fieldid, $userid);
         $sql = $this->field->param1;
@@ -80,8 +78,7 @@ class profile_field_dynamicmenu extends profile_field_base
      *
      * @deprecated since Moodle 3.1
      */
-    public function profile_field_dynamicmenu($fieldid=0, $userid=0) 
-    {
+    public function profile_field_dynamicmenu($fieldid=0, $userid=0) {
         debugging('Use of class name as constructor is deprecated', DEBUG_DEVELOPER);
         self::__construct($fieldid, $userid);
     }
@@ -92,8 +89,7 @@ class profile_field_dynamicmenu extends profile_field_base
      *
      * @param moodleform $mform Moodle form instance
      */
-    public function edit_field_add($mform) 
-    {
+    public function edit_field_add($mform) {
         $mform->addElement('select', $this->inputname, format_string($this->field->name), $this->options);
     }
 
@@ -103,8 +99,7 @@ class profile_field_dynamicmenu extends profile_field_base
      *
      * @param moodleform $mform Moodle form instance
      */
-    public function edit_field_set_default($mform) 
-    {
+    public function edit_field_set_default($mform) {
         $key = $this->field->defaultdata;
         if (isset($this->options[$key]) || ($key = array_search($key, $this->options)) !== false) {
             $defaultkey = $key;
@@ -124,8 +119,7 @@ class profile_field_dynamicmenu extends profile_field_base
      * @param  stdClass $datarecord The object that will be used to save the record
      * @return mixed Data or null
      */
-    public function edit_save_data_preprocess($data, $datarecord) 
-    {
+    public function edit_save_data_preprocess($data, $datarecord) {
         return isset($this->options[$data]) ? $data : null;
     }
 
@@ -137,8 +131,7 @@ class profile_field_dynamicmenu extends profile_field_base
      *
      * @param stdClass $user User object.
      */
-    public function edit_load_user_data($user) 
-    {
+    public function edit_load_user_data($user) {
         $user->{$this->inputname} = $this->datakey;
     }
 
@@ -147,8 +140,7 @@ class profile_field_dynamicmenu extends profile_field_base
      *
      * @param moodleform $mform instance of the moodleform class
      */
-    public function edit_field_set_locked($mform) 
-    {
+    public function edit_field_set_locked($mform) {
         if (!$mform->elementExists($this->inputname)) {
             return;
         }
@@ -163,8 +155,7 @@ class profile_field_dynamicmenu extends profile_field_base
      * @param  string $value one of the values in menu options.
      * @return int options key for the menu
      */
-    public function convert_external_data($value) 
-    {
+    public function convert_external_data($value) {
         if (isset($this->options[$value])) {
             $retval = $value;
         } else {

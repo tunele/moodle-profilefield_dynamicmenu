@@ -77,32 +77,28 @@ class profile_define_dynamicmenu extends profile_define_base
      */
     public function define_after_data(&$form) {
         global $DB;
-        try {
-            $sql = $form->getElementValue('param1');
+        $sql = $form->getElementValue('param1');
 
-            if ($sql) {
-                $rs = $DB->get_records_sql($sql);
-                $i = 0;
-                $defsample = '';
-                $countdata = count($rs);
-                foreach ($rs as $record) {
-                    if ($i == 12) {
-                        exit;
-                    }
-                    if (isset($record->data) && isset($record->id)) {
-                        if (strlen($record->data) > 40) {
-                            $sampleval = substr($record->data, 0, 36).'...';
-                        }else {
-                            $sampleval = $record->data;
-                        }
-                        $defsample .= 'id: '.$record->id .' - data: '.$sampleval."\n";
-                    }
+        if ($sql) {
+            $rs = $DB->get_records_sql($sql);
+            $i = 0;
+            $defsample = '';
+            $countdata = count($rs);
+            foreach ($rs as $record) {
+                if ($i == 12) {
+                    exit;
                 }
-                $form->setDefault('sql_count_data', $countdata);
-                $form->setDefault('sql_sample_data', $defsample);
+                if (isset($record->data) && isset($record->id)) {
+                    if (strlen($record->data) > 40) {
+                        $sampleval = substr($record->data, 0, 36).'...';
+                    } else {
+                        $sampleval = $record->data;
+                    }
+                    $defsample .= 'id: '.$record->id .' - data: '.$sampleval."\n";
+                }
             }
-        } catch (Exception $e) {
-            throw ($e);
+            $form->setDefault('sql_count_data', $countdata);
+            $form->setDefault('sql_sample_data', $defsample);
         }
     }
 
@@ -126,15 +122,15 @@ class profile_define_dynamicmenu extends profile_define_base
                 $err['param1'] = get_string('queryerrorfalse', 'profilefield_dynamicmenu');
             } else {
                 if (count($rs) == 0) {
-                    $err['param1']=get_string('queryerrorempty', 'profilefield_dynamicmenu');
+                    $err['param1'] = get_string('queryerrorempty', 'profilefield_dynamicmenu');
                 } else {
                     $firstval = reset($rs);
                     if (!object_property_exists($firstval, 'id')) {
-                        $err['param1']=get_string('queryerroridmissing', 'profilefield_dynamicmenu');
+                        $err['param1'] = get_string('queryerroridmissing', 'profilefield_dynamicmenu');
                     } else {
                         if (!object_property_exists($firstval, 'data')) {
                             $err['param1'] = get_string('queryerrordatamissing', 'profilefield_dynamicmenu');
-                        } elseif (!empty($data->defaultdata) && !isset($rs[$data->defaultdata])) {
+                        } else if (!empty($data->defaultdata) && !isset($rs[$data->defaultdata])) {
                             // Def missing.
                             $err['defaultdata'] = get_string('queryerrordefaultmissing', 'profilefield_dynamicmenu');
                         }
