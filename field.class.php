@@ -75,7 +75,6 @@ class profile_field_dynamicmenu extends profile_field_base {
      * @deprecated since Moodle 3.1
      */
     public function profile_field_dynamicmenu($fieldid=0, $userid=0) {
-        debugging('Use of class name as constructor is deprecated', DEBUG_DEVELOPER);
         self::__construct($fieldid, $userid);
     }
 
