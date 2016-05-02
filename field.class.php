@@ -51,9 +51,9 @@ class profile_field_dynamicmenu extends profile_field_base {
     public function __construct($fieldid = 0, $userid = 0) {
         // First call parent constructor.
         parent::__construct($fieldid, $userid);
-        $mykey=$fieldid.','.$userid; // It will always work because they are number, so no chance of ambiguity
+        $mykey = $fieldid.','.$userid; // It will always work because they are number, so no chance of ambiguity.
         if (array_key_exists($mykey , self::$acalls)) {
-            $rs=self::$acalls[$mykey];
+            $rs = self::$acalls[$mykey];
         } else {
             $sql = $this->field->param1;
             global $DB;
