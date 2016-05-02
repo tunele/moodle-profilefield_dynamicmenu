@@ -37,6 +37,9 @@ class profile_field_dynamicmenu extends profile_field_base {
     /** @var int $datakey */
     public $datakey;
 
+    /** @var  array @calls array indexed by @fieldid-$userid. It keeps track of recordset,
+     * so that we don't do the query twice for the same field */
+    private static $acalls = array();
     /**
      * Constructor method.
      *
@@ -48,9 +51,15 @@ class profile_field_dynamicmenu extends profile_field_base {
     public function __construct($fieldid = 0, $userid = 0) {
         // First call parent constructor.
         parent::__construct($fieldid, $userid);
-        $sql = $this->field->param1;
-        global $DB;
-        $rs = $DB->get_records_sql($sql);
+        $mykey=$fieldid.','.$userid; // It will always work because they are number, so no chance of ambiguity
+        if (array_key_exists($mykey , self::$acalls)) {
+            $rs=self::$acalls[$mykey];
+        } else {
+            $sql = $this->field->param1;
+            global $DB;
+            $rs = $DB->get_records_sql($sql);
+            self::$acalls[$mykey] = $rs;
+        }
         $this->options = array();
         if ($this->field->required) {
             $this->options[''] = get_string('choose').'...';
@@ -163,5 +172,3 @@ class profile_field_dynamicmenu extends profile_field_base {
         return $retval;
     }
 }
-
-
