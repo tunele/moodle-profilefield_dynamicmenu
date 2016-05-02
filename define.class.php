@@ -76,28 +76,37 @@ class profile_define_dynamicmenu extends profile_define_base
      */
     public function define_after_data(&$form) {
         global $DB;
-        $sql = $form->getElementValue('param1');
+        try {
+            $sql = $form->getElementValue('param1');
 
-        if ($sql) {
-            $rs = $DB->get_records_sql($sql);
-            $i = 0;
-            $defsample = '';
-            $countdata = count($rs);
-            foreach ($rs as $record) {
-                if ($i == 12) {
-                    break;
-                }
-                if (isset($record->data) && isset($record->id)) {
-                    if (strlen($record->data) > 40) {
-                        $sampleval = substr($record->data, 0, 36).'...';
-                    } else {
-                        $sampleval = $record->data;
+            if ($sql) {
+                $rs = $DB->get_records_sql($sql);
+                $i = 0;
+                $defsample = '';
+                $countdata = count($rs);
+                foreach ($rs as $record) {
+                    if ($i == 12) {
+                        break;
                     }
-                    $defsample .= 'id: '.$record->id .' - data: '.$sampleval."\n";
+                    if (isset($record->data) && isset($record->id)) {
+                        if (strlen($record->data) > 40) {
+                            $sampleval = substr(format_string($record->data), 0, 36).'...';
+                        } else {
+                            $sampleval = format_string($record->data);
+                        }
+                        $defsample .= 'id: '.format_string($record->id) .' - data: '.$sampleval."\n";
+                    }
                 }
+                $form->setDefault('sql_count_data', $countdata);
+                $form->setDefault('sql_sample_data', $defsample);
+            }else {
+                $form->setDefault('sql_count_data', 0);
+                $form->setDefault('sql_sample_data', '');
             }
-            $form->setDefault('sql_count_data', $countdata);
-            $form->setDefault('sql_sample_data', $defsample);
+        } catch (Exception $e) {
+            // We don't have to do anything here, since the error shall be handled by define_validate_specific
+            $form->setDefault('sql_count_data', 0);
+            $form->setDefault('sql_sample_data', '');
         }
     }
 
@@ -112,7 +121,7 @@ class profile_define_dynamicmenu extends profile_define_base
         $err = array();
 
         $data->param1 = str_replace("\r", '', $data->param1);
-        // Provo ad eseguire la query.
+        // Le'ts try to execute the query.
         $sql = $data->param1;
         global $DB;
         try {

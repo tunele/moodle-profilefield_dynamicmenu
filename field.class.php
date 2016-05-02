@@ -56,7 +56,7 @@ class profile_field_dynamicmenu extends profile_field_base {
             $this->options[''] = get_string('choose').'...';
         }
         foreach ($rs as $key => $option) {
-            $this->options[$key] = format_string($option->data);// Multilang formatting.
+            $this->options[format_string($key)] = format_string($option->data);// Multilang formatting.
         }
 
         // Set the data key.
