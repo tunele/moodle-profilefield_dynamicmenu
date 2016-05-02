@@ -99,12 +99,12 @@ class profile_define_dynamicmenu extends profile_define_base
                 }
                 $form->setDefault('sql_count_data', $countdata);
                 $form->setDefault('sql_sample_data', $defsample);
-            }else {
+            } else {
                 $form->setDefault('sql_count_data', 0);
                 $form->setDefault('sql_sample_data', '');
             }
         } catch (Exception $e) {
-            // We don't have to do anything here, since the error shall be handled by define_validate_specific
+            // We don't have to do anything here, since the error shall be handled by define_validate_specific.
             $form->setDefault('sql_count_data', 0);
             $form->setDefault('sql_sample_data', '');
         }
