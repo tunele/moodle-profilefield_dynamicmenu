@@ -51,29 +51,32 @@ class profile_field_dynamicmenu extends profile_field_base {
     public function __construct($fieldid = 0, $userid = 0) {
         // First call parent constructor.
         parent::__construct($fieldid, $userid);
-        $mykey = $fieldid.','.$userid; // It will always work because they are number, so no chance of ambiguity.
-        if (array_key_exists($mykey , self::$acalls)) {
-            $rs = self::$acalls[$mykey];
-        } else {
-            $sql = $this->field->param1;
-            global $DB;
-            $rs = $DB->get_records_sql($sql);
-            self::$acalls[$mykey] = $rs;
-        }
-        $this->options = array();
-        if ($this->field->required) {
-            $this->options[''] = get_string('choose').'...';
-        }
-        foreach ($rs as $key => $option) {
-            $this->options[format_string($key)] = format_string($option->data);// Multilang formatting.
-        }
+        // Only if we actually need data.
+        if ($fieldid !== 0 && $userid !== 0) {
+            $mykey = $fieldid.','.$userid; // It will always work because they are number, so no chance of ambiguity.
+            if (array_key_exists($mykey , self::$acalls)) {
+                $rs = self::$acalls[$mykey];
+            } else {
+                $sql = $this->field->param1;
+                global $DB;
+                $rs = $DB->get_records_sql($sql);
+                self::$acalls[$mykey] = $rs;
+            }
+            $this->options = array();
+            if ($this->field->required) {
+                $this->options[''] = get_string('choose').'...';
+            }
+            foreach ($rs as $key => $option) {
+                $this->options[format_string($key)] = format_string($option->data);// Multilang formatting.
+            }
 
-        // Set the data key.
-        if ($this->data !== null) {
-            $key = $this->data;
-            if (isset($this->options[$key]) || ($key = array_search($key, $this->options)) !== false) {
-                $this->data = $key;
-                $this->datakey = $key;
+            // Set the data key.
+            if ($this->data !== null) {
+                $key = $this->data;
+                if (isset($this->options[$key]) || ($key = array_search($key, $this->options)) !== false) {
+                    $this->data = $key;
+                    $this->datakey = $key;
+                }
             }
         }
     }
