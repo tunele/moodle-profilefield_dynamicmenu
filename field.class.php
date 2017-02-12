@@ -171,4 +171,11 @@ class profile_field_dynamicmenu extends profile_field_base {
         }
         return $retval;
     }
+
+    /**
+     * Display the data for this field.
+     */
+    public function display_data() {
+        $this->data;
+    }
 }
