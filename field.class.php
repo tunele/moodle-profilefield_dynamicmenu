@@ -176,6 +176,13 @@ class profile_field_dynamicmenu extends profile_field_base {
      * Display the data for this field.
      */
     public function display_data() {
-        $this->data;
+        $sql = $this->field->param1;
+        global $DB;
+        $rs = $DB->get_records_sql($sql);
+        if (array_key_exists($this->datakey, $rs)) {
+            return $rs[$this->datakey]->data;
+        } else {
+            return 'N/A';
+        }
     }
 }
